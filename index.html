@@ -1,12 +1,20 @@
-@'
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Hello</title>
-  </head>
+  <head><meta charset="utf-8"><title>$1 Test</title></head>
   <body>
-    <h1>Hello, world!</h1>
+    <h1>$1 Live Payment</h1>
+    <button id="buy">Buy $1</button>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+      const STRIPE_PK = 'pk_live_51SAuKpANyhLRhSyI2iXBAhbrQoYPx8KV6U90t1T31QRgyAGynvmiW3xs7ydI3JjsUTwjM0HD5UC5OUAaKPJ5gD9a00DkpBY6EF'; // your publishable key
+      document.getElementById('buy').onclick = async () => {
+        const res = await fetch('/.netlify/functions/create-session', { method: 'POST' });
+        if (!res.ok) { alert('Error creating session'); return; }
+        const { id } = await res.json();
+        const stripe = Stripe(STRIPE_PK);
+        stripe.redirectToCheckout({ sessionId: id });
+      };
+    </script>
   </body>
 </html>
-'@ | Set-Content -Encoding UTF8 index.html
